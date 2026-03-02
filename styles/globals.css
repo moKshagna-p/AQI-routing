@@ -11,45 +11,47 @@
    ═══════════════════════════════════════════ */
 
 :root {
-  /* Surface Palette — deep, layered blacks */
-  --bg: #020204;
-  --bg-soft: #09090d;
-  --bg-elevated: #0e0e14;
-  --bg-card: #101018;
-  --surface-1: rgba(255, 255, 255, 0.025);
-  --surface-2: rgba(255, 255, 255, 0.05);
-  --surface-3: rgba(255, 255, 255, 0.08);
-  --surface-4: rgba(255, 255, 255, 0.12);
+  /* Surface Palette — deep, absolute blacks */
+  --bg: #000000;
+  --bg-soft: #050505;
+  --bg-elevated: #0a0a0a;
+  --bg-card: #0c0c0c;
+  --surface-1: rgba(255, 255, 255, 0.03);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --surface-3: rgba(255, 255, 255, 0.09);
+  --surface-4: rgba(255, 255, 255, 0.14);
 
-  /* Borders — refined gradients */
-  --border-subtle: rgba(255, 255, 255, 0.05);
+  /* Borders — refined, subtle */
+  --border-subtle: rgba(255, 255, 255, 0.04);
   --border-default: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --border-accent: rgba(0, 255, 209, 0.2);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-accent: rgba(255, 255, 255, 0.25);
 
-  /* Brand — triadic with depth */
-  --cyan: #00ffd1;
-  --cyan-soft: #6bffe3;
-  --cyan-dim: rgba(0, 255, 209, 0.1);
-  --cyan-glow: rgba(0, 255, 209, 0.35);
+  /* Brand — Monochrome / Glassy */
+  --cyan: #ffffff;
+  --cyan-soft: #f8f8f8;
+  --cyan-dim: rgba(255, 255, 255, 0.1);
+  --cyan-glow: rgba(255, 255, 255, 0.2);
+  
+  /* Functional Colors (Keep for data integrity) */
   --danger: #ff3b5c;
   --danger-dim: rgba(255, 59, 92, 0.1);
   --warn: #ffd166;
   --warn-dim: rgba(255, 209, 102, 0.1);
 
   /* Text Hierarchy */
-  --text-primary: #eef0f4;
-  --text-secondary: rgba(255, 255, 255, 0.55);
-  --text-tertiary: rgba(255, 255, 255, 0.32);
-  --text-muted: rgba(255, 255, 255, 0.18);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+  --text-muted: rgba(255, 255, 255, 0.25);
 
   /* Radius System */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 32px;
-  --radius-2xl: 44px;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 36px;
+  --radius-2xl: 48px;
   --radius-full: 9999px;
 
   /* Easing — cinematic curves */
@@ -59,9 +61,9 @@
   --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   /* Shadows */
-  --shadow-elevated: 0 32px 80px -20px rgba(0, 0, 0, 0.75), 0 12px 24px -4px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
-  --shadow-glow-cyan: 0 0 60px rgba(0, 255, 209, 0.15), 0 0 20px rgba(0, 255, 209, 0.1);
+  --shadow-elevated: 0 32px 64px -16px rgba(0, 0, 0, 0.8), 0 16px 32px -8px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --shadow-glow-white: 0 0 40px rgba(255, 255, 255, 0.08);
 }
 
 /* ─── Base Reset ─── */
@@ -91,9 +93,8 @@ body {
   position: relative;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse 90% 60% at 5% 0%, rgba(0, 255, 209, 0.04), transparent),
-    radial-gradient(ellipse 70% 50% at 98% 5%, rgba(255, 59, 92, 0.03), transparent),
-    linear-gradient(180deg, var(--bg), #040408);
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 255, 255, 0.03), transparent),
+    linear-gradient(180deg, #000000, #050505);
 }
 
 /* ─── Noise grain — ultra-subtle film texture ─── */
@@ -103,9 +104,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.75' numOctaves='4' stitchTiles='stitch' type='fractalNoise'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='3' stitchTiles='stitch' type='fractalNoise'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 /* ─── Links ─── */
@@ -121,12 +121,12 @@ select,
 textarea {
   font-family: inherit;
   transition:
-    color 180ms var(--ease-out-expo),
-    background-color 180ms var(--ease-out-expo),
+    color 200ms var(--ease-out-expo),
+    background-color 200ms var(--ease-out-expo),
     border-color 200ms var(--ease-out-expo),
-    box-shadow 280ms var(--ease-out-expo),
-    transform 280ms var(--ease-out-expo),
-    opacity 180ms var(--ease-out-expo);
+    box-shadow 300ms var(--ease-out-expo),
+    transform 300ms var(--ease-out-expo),
+    opacity 200ms var(--ease-out-expo);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
@@ -135,9 +135,8 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline: 2px solid white;
+  outline-offset: 4px;
 }
 
 /* ─── App Shell ─── */
@@ -161,7 +160,7 @@ a:focus-visible {
 .heading-font {
   font-family: 'Cabinet Grotesk', 'Satoshi', sans-serif;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .mono-font {
@@ -174,42 +173,33 @@ a:focus-visible {
    ═══════════════════════════════════════════ */
 
 .glass {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.015) 100%
-  );
-  border: 1px solid var(--border-default);
-  backdrop-filter: blur(40px) saturate(1.4);
-  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(50px) saturate(1.8);
+  -webkit-backdrop-filter: blur(50px) saturate(1.8);
   box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
     var(--shadow-elevated);
 }
 
 .glass-subtle {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(255, 255, 255, 0.01) 100%
-  );
-  border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(24px) saturate(1.2);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   box-shadow: var(--shadow-card);
 }
 
-/* ─── Panel Edge — Gradient border effect ─── */
+/* ─── Panel Edge — Subtle white edge ─── */
 .panel-edge {
   position: relative;
-  overflow: hidden;
 }
 
 .panel-edge::before {
@@ -220,9 +210,9 @@ a:focus-visible {
   padding: 1px;
   background: linear-gradient(
     145deg,
-    rgba(0, 255, 209, 0.25),
-    rgba(255, 255, 255, 0.0) 45%,
-    rgba(255, 59, 92, 0.12) 100%
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.0) 40%,
+    rgba(255, 255, 255, 0.04) 100%
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -233,50 +223,50 @@ a:focus-visible {
 }
 
 /* ═══════════════════════════════════════════
-   Buttons — Refined interactions
+   Buttons — Glassy refined interactions
    ═══════════════════════════════════════════ */
 
-.cyan-button {
-  border: 1px solid rgba(0, 255, 209, 0.4);
-  background: linear-gradient(
-    140deg,
-    rgba(0, 255, 209, 0.14),
-    rgba(0, 255, 209, 0.04)
-  );
-  color: #00ffd1;
+.glass-button {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #ffffff;
   position: relative;
   overflow: hidden;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  box-shadow:
-    0 0 0 rgba(0, 255, 209, 0),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.cyan-button::before {
+.glass-button::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(140deg, rgba(0, 255, 209, 0.12), transparent 60%);
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.1), transparent 70%);
   opacity: 0;
-  transition: opacity 500ms var(--ease-out-expo);
+  transition: opacity 400ms var(--ease-out-expo);
 }
 
-.cyan-button:hover {
+.glass-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(0, 255, 209, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
   box-shadow:
-    0 0 50px rgba(0, 255, 209, 0.18),
-    0 16px 40px -10px rgba(0, 255, 209, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    var(--shadow-glow-white),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.cyan-button:hover::before {
+.glass-button:hover::before {
   opacity: 1;
 }
 
-.cyan-button:active {
+.glass-button:active {
   transform: translateY(0);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .ghost-button {
@@ -284,13 +274,12 @@ a:focus-visible {
   background: transparent;
   color: var(--text-secondary);
   position: relative;
-  letter-spacing: 0.01em;
 }
 
 .ghost-button:hover {
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
   color: var(--text-primary);
-  background: var(--surface-1);
+  background: rgba(255, 255, 255, 0.02);
   transform: translateY(-1px);
 }
 
@@ -386,7 +375,7 @@ a:focus-visible {
    ═══════════════════════════════════════════ */
 
 .gradient-text {
-  background: linear-gradient(135deg, #00ffd1 0%, #00c4ff 50%, #a78bfa 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 50%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -402,11 +391,11 @@ a:focus-visible {
 .gradient-text-hero {
   background: linear-gradient(
     135deg,
-    #eef0f4 0%,
-    #eef0f4 35%,
-    #00ffd1 55%,
-    #00c4ff 75%,
-    #eef0f4 100%
+    #ffffff 0%,
+    #ffffff 35%,
+    #a0a0a0 55%,
+    #f0f0f0 75%,
+    #ffffff 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -418,11 +407,11 @@ a:focus-visible {
 .stat-shimmer {
   background: linear-gradient(
     90deg,
-    var(--cyan) 0%,
-    #a0ffd8 25%,
-    var(--cyan) 50%,
-    #a0ffd8 75%,
-    var(--cyan) 100%
+    #ffffff 0%,
+    #d0d0d0 25%,
+    #ffffff 50%,
+    #d0d0d0 75%,
+    #ffffff 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;

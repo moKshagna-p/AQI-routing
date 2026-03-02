@@ -12,13 +12,13 @@ import { usePlanStore } from '@/lib/store';
 const LeafletMap = dynamic(() => import('@/components/Map'), {
   ssr: false,
   loading: () => (
-    <div className="grid h-screen place-items-center bg-bg">
+    <div className="grid h-screen place-items-center bg-black">
       <div className="flex flex-col items-center gap-4">
         <div className="relative">
-          <div className="h-12 w-12 rounded-2xl border border-cyan/20 bg-cyan/5" />
-          <div className="absolute inset-0 animate-pulse-ring rounded-2xl border border-cyan/30" />
+          <div className="h-12 w-12 rounded-2xl border border-white/20 bg-white/5" />
+          <div className="absolute inset-0 animate-pulse-ring rounded-2xl border border-white/30" />
         </div>
-        <span className="text-[13px] text-white/40">Initializing map engine</span>
+        <span className="mono-font text-[12px] uppercase tracking-[0.2em] text-white/40">Initializing map engine</span>
       </div>
     </div>
   ),
@@ -79,24 +79,24 @@ function AQIModal({ open, onClose }: { open: boolean; onClose: () => void }) {
             </p>
 
             <div className="mt-5 space-y-2.5">
-              <div className="flex items-center gap-3 rounded-xl border border-cyan/15 bg-cyan/5 p-3.5">
-                <div className="h-3 w-3 rounded-full bg-cyan shadow-[0_0_8px_rgba(0,255,209,0.5)]" />
+              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 transition-colors hover:bg-white/8">
+                <div className="h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.3)]" />
                 <div>
-                  <div className="text-sm font-medium text-cyan">0 - 50: Good</div>
+                  <div className="text-sm font-semibold text-emerald-400">0 - 50: Good</div>
                   <div className="text-[11px] text-white/30">Air quality is satisfactory</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-xl border border-warn/15 bg-warn/5 p-3.5">
-                <div className="h-3 w-3 rounded-full bg-warn shadow-[0_0_8px_rgba(255,209,102,0.5)]" />
+              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 transition-colors hover:bg-white/8">
+                <div className="h-3 w-3 rounded-full bg-warn shadow-[0_0_12px_rgba(255,209,102,0.3)]" />
                 <div>
-                  <div className="text-sm font-medium text-warn">51 - 100: Moderate</div>
+                  <div className="text-sm font-semibold text-warn">51 - 100: Moderate</div>
                   <div className="text-[11px] text-white/30">Acceptable for most individuals</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-xl border border-danger/15 bg-danger/5 p-3.5">
-                <div className="h-3 w-3 rounded-full bg-danger shadow-[0_0_8px_rgba(255,59,92,0.5)]" />
+              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 transition-colors hover:bg-white/8">
+                <div className="h-3 w-3 rounded-full bg-danger shadow-[0_0_12px_rgba(255,59,92,0.3)]" />
                 <div>
-                  <div className="text-sm font-medium text-danger">101+: Unhealthy</div>
+                  <div className="text-sm font-semibold text-danger">101+: Unhealthy</div>
                   <div className="text-[11px] text-white/30">Sensitive groups should limit exposure</div>
                 </div>
               </div>
@@ -156,9 +156,9 @@ export default function PlanPage() {
         <div className="glass panel-edge flex items-center gap-1 rounded-full px-2 py-1.5 sm:gap-2 sm:px-3">
           <Link
             href="/"
-            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] text-white/50 transition-colors hover:bg-white/5 hover:text-white"
+            className="flex items-center gap-1.5 rounded-full px-4 py-2 text-[12px] text-white/50 transition-all hover:bg-white/10 hover:text-white"
           >
-            <svg viewBox="0 0 16 16" fill="none" className="h-3 w-3">
+            <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
               <path d="M10 4L6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Back
@@ -166,13 +166,13 @@ export default function PlanPage() {
 
           <div className="h-4 w-px bg-white/10" />
 
-          <div className="flex items-center gap-2 px-3">
-            <span className="flex h-5 w-5 items-center justify-center rounded-md border border-cyan/25 bg-cyan/8">
-              <svg viewBox="0 0 12 12" fill="none" className="h-2.5 w-2.5">
-                <path d="M6 1L2 6l4 5 4-5-4-5z" stroke="#00ffd1" strokeWidth="1" fill="rgba(0,255,209,0.2)" />
+          <div className="flex items-center gap-2.5 px-4">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg border border-white/20 bg-white/5">
+              <svg viewBox="0 0 12 12" fill="none" className="h-3 w-3">
+                <path d="M6 1L2 6l4 5 4-5-4-5z" stroke="white" strokeWidth="1" fill="rgba(255,255,255,0.15)" />
               </svg>
             </span>
-            <span className="display-font text-[13px] tracking-tight sm:text-sm">AirRoute</span>
+            <span className="display-font text-[14px] font-bold tracking-tight sm:text-[15px]">AirRoute</span>
           </div>
 
           <div className="h-4 w-px bg-white/10" />
@@ -180,7 +180,7 @@ export default function PlanPage() {
           <button
             type="button"
             onClick={() => setShowAQIInfo(true)}
-            className="rounded-full px-3 py-1.5 text-[12px] text-white/50 transition-colors hover:bg-white/5 hover:text-white"
+            className="rounded-full px-4 py-2 text-[12px] text-white/50 transition-all hover:bg-white/10 hover:text-white"
           >
             AQI Info
           </button>

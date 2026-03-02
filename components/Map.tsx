@@ -9,9 +9,9 @@ import { type RouteVariant } from '@/lib/routeUtils';
 
 const sourceIcon = L.divIcon({
   html: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="16" cy="16" r="14" fill="#020204" stroke="#00FFD1" stroke-width="1.5" opacity="0.9"/>
-    <circle cx="16" cy="16" r="5" fill="#00FFD1"/>
-    <circle cx="16" cy="16" r="8" stroke="#00FFD1" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="16" cy="16" r="14" fill="#000000" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+    <circle cx="16" cy="16" r="5" fill="#FFFFFF"/>
+    <circle cx="16" cy="16" r="8" stroke="#FFFFFF" stroke-width="0.5" opacity="0.3"/>
   </svg>`,
   className: '',
   iconSize: [32, 32],
@@ -20,9 +20,9 @@ const sourceIcon = L.divIcon({
 
 const destIcon = L.divIcon({
   html: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="16" cy="16" r="14" fill="#020204" stroke="#FF3B5C" stroke-width="1.5" opacity="0.9"/>
-    <circle cx="16" cy="16" r="5" fill="#FF3B5C"/>
-    <circle cx="16" cy="16" r="8" stroke="#FF3B5C" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="16" cy="16" r="14" fill="#000000" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+    <circle cx="16" cy="16" r="5" fill="#FFFFFF"/>
+    <circle cx="16" cy="16" r="8" stroke="#FFFFFF" stroke-width="0.5" opacity="0.3"/>
   </svg>`,
   className: '',
   iconSize: [32, 32],
@@ -90,19 +90,19 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
 
         <Marker position={source} icon={sourceIcon}>
           <Popup>
-            <span style={{ color: '#00ffd1', fontWeight: 600, fontSize: 12 }}>Origin</span>
+            <span style={{ color: '#ffffff', fontWeight: 600, fontSize: 12 }}>Origin</span>
           </Popup>
         </Marker>
         <Marker position={destination} icon={destIcon}>
           <Popup>
-            <span style={{ color: '#ff3b5c', fontWeight: 600, fontSize: 12 }}>Destination</span>
+            <span style={{ color: '#ffffff', fontWeight: 600, fontSize: 12 }}>Destination</span>
           </Popup>
         </Marker>
 
         {drawn.length > 1 && (
           <Polyline
             positions={drawn}
-            pathOptions={{ color: '#00ffd180', weight: 3, opacity: 0.25 }}
+            pathOptions={{ color: '#ffffff', weight: 3, opacity: 0.15 }}
             className="route-stroke"
           />
         )}
@@ -111,7 +111,7 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
           <Polyline
             key={`segment-${idx}`}
             positions={segment.positions}
-            pathOptions={{ color: segment.color, weight: 5, opacity: 0.85 }}
+            pathOptions={{ color: segment.color, weight: 6, opacity: 0.9 }}
             className="route-stroke"
           />
         ))}
@@ -120,12 +120,12 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
           <CircleMarker
             key={`${point.lat}-${point.lng}-${index}`}
             center={[point.lat, point.lng]}
-            radius={showHeatmap ? 16 : 5}
+            radius={showHeatmap ? 18 : 6}
             pathOptions={{
               color: getAQIColor(point.aqi),
               fillColor: getAQIColor(point.aqi),
-              fillOpacity: showHeatmap ? 0.18 : 0.7,
-              weight: showHeatmap ? 0.5 : 1.5,
+              fillOpacity: showHeatmap ? 0.2 : 0.8,
+              weight: showHeatmap ? 0.5 : 2,
             }}
           >
             <Tooltip direction="top" offset={[0, -10]}>
@@ -137,10 +137,8 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
 
       {/* Ambient map overlay */}
       <div className="pointer-events-none absolute inset-0 z-[900]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,209,0.08),transparent_45%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_85%,rgba(255,59,92,0.06),transparent_45%)]" />
         {/* Edge vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(2,2,4,0.4)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(0,0,0,0.6)_100%)]" />
       </div>
 
       {/* Heatmap toggle */}
@@ -153,10 +151,10 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
             key={btn.label}
             type="button"
             onClick={btn.onClick}
-            className={`rounded-full px-3 py-1.5 text-[11px] font-medium transition-all duration-200 ${
+            className={`rounded-full px-4 py-1.5 text-[11px] font-medium transition-all duration-300 ${
               btn.active
-                ? 'bg-cyan/12 text-cyan'
-                : 'text-white/35 hover:bg-white/5 hover:text-white/60'
+                ? 'bg-white/15 text-white shadow-[0_0_12px_rgba(255,255,255,0.08)]'
+                : 'text-white/40 hover:bg-white/5 hover:text-white/70'
             }`}
           >
             {btn.label}
@@ -171,11 +169,11 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 10 }}
-            className="glass absolute right-4 top-20 z-[1000] rounded-xl px-3.5 py-2.5 sm:right-6 sm:top-24"
+            className="glass absolute right-4 top-20 z-[1000] rounded-xl px-4 py-3 sm:right-6 sm:top-24"
           >
-            <div className="mb-1 text-[9px] uppercase tracking-[0.2em] text-white/25">Active Route</div>
-            <div className="heading-font text-sm text-white/90">{selectedRoute.label}</div>
-            <div className="number-display mt-0.5 text-xs font-bold" style={{ color: getAQIColor(selectedRoute.avgAQI) }}>
+            <div className="mb-1 text-[9px] uppercase tracking-[0.2em] text-white/30">Active Route</div>
+            <div className="heading-font text-sm font-semibold text-white">{selectedRoute.label}</div>
+            <div className="number-display mt-0.5 text-xs font-black" style={{ color: getAQIColor(selectedRoute.avgAQI) }}>
               AQI {selectedRoute.avgAQI}
             </div>
           </motion.div>
@@ -189,16 +187,16 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="pointer-events-none absolute inset-0 z-[1100] grid place-items-center bg-black/40 backdrop-blur-sm"
+            className="pointer-events-none absolute inset-0 z-[1100] grid place-items-center bg-black/60 backdrop-blur-md"
             role="status"
             aria-live="polite"
           >
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-4">
               <div className="relative">
-                <div className="h-10 w-10 rounded-xl border border-cyan/20 bg-cyan/5" />
-                <div className="absolute inset-0 animate-pulse-ring rounded-xl border border-cyan/40" />
+                <div className="h-12 w-12 rounded-2xl border border-white/20 bg-white/5" />
+                <div className="absolute inset-0 animate-pulse-ring rounded-2xl border border-white/40" />
               </div>
-              <span className="text-[13px] text-white/40">Analyzing air corridors</span>
+              <span className="mono-font text-[12px] uppercase tracking-[0.2em] text-white/50">Analyzing Air Corridor</span>
             </div>
           </motion.div>
         )}

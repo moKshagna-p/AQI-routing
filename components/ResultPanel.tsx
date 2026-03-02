@@ -92,7 +92,7 @@ export default function ResultPanel({ routes, selectedRouteId, onSelect }: Resul
               transition={{ delay: 0.1 + idx * 0.08 }}
               className={`group w-full rounded-2xl border p-4 text-left transition-all duration-300 ${
                 selected
-                  ? 'border-cyan/25 bg-cyan/[0.06] shadow-[0_0_30px_rgba(0,255,209,0.1)]'
+                  ? 'border-white/25 bg-white/[0.06] shadow-[0_0_30px_rgba(255,255,255,0.06)]'
                   : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.03]'
               }`}
             >
@@ -101,7 +101,7 @@ export default function ResultPanel({ routes, selectedRouteId, onSelect }: Resul
                 <div className="flex items-center gap-2.5">
                   <div className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-colors ${
                     selected
-                      ? 'border-cyan/30 bg-cyan/10 text-cyan'
+                      ? 'border-white/30 bg-white/10 text-white'
                       : 'border-white/10 bg-white/[0.04] text-white/40 group-hover:text-white/60'
                   }`}>
                     {labelIcons[route.label] ?? labelIcons.Balanced}

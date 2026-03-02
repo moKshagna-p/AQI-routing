@@ -109,10 +109,10 @@ export default function HomePage() {
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 sm:px-10">
           <Link href="/" className="display-font flex items-center gap-2.5 text-lg tracking-tight">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-cyan/30 bg-cyan/10">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/20 bg-white/5">
               <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4">
-                <path d="M10 2L3 10l7 8 7-8-7-8z" stroke="#00ffd1" strokeWidth="1.5" fill="rgba(0,255,209,0.15)" />
-                <circle cx="10" cy="10" r="2" fill="#00ffd1" />
+                <path d="M10 2L3 10l7 8 7-8-7-8z" stroke="white" strokeWidth="1.5" fill="rgba(255,255,255,0.1)" />
+                <circle cx="10" cy="10" r="2" fill="white" />
               </svg>
             </span>
             AirRoute
@@ -126,7 +126,7 @@ export default function HomePage() {
 
           <Link
             href="/plan"
-            className="cyan-button rounded-full px-5 py-2 text-xs font-semibold tracking-wide sm:text-[13px]"
+            className="glass-button rounded-full px-5 py-2 text-xs font-semibold tracking-wide sm:text-[13px]"
           >
             Launch Planner
           </Link>
@@ -188,7 +188,7 @@ export default function HomePage() {
           >
             <Link
               href="/plan"
-              className="cyan-button group flex items-center gap-3 rounded-full px-8 py-3.5 text-sm font-semibold"
+              className="glass-button group flex items-center gap-3 rounded-full px-8 py-3.5 text-sm font-semibold"
             >
               Plan Clean Route
               <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1">
@@ -237,7 +237,7 @@ export default function HomePage() {
         <div className="ticker-scroll flex gap-16 whitespace-nowrap px-6">
           {[...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems].map((item, idx) => (
             <span key={`${item}-${idx}`} className="flex items-center gap-3 text-[11px] uppercase tracking-[0.25em] text-white/30">
-              <span className="h-1 w-1 rounded-full bg-cyan/40" />
+              <span className="h-1 w-1 rounded-full bg-white/20" />
               {item}
             </span>
           ))}
@@ -282,16 +282,11 @@ export default function HomePage() {
                 className="feature-card group relative rounded-2xl p-6 sm:p-7"
               >
                 {/* Subtle number */}
-                <span className="absolute right-5 top-4 text-[80px] font-black leading-none text-white/[0.02] display-font">
+                <span className="absolute right-5 top-4 text-[80px] font-black leading-none text-white/[0.01] display-font">
                   {String(idx + 1).padStart(2, '0')}
                 </span>
 
-                <div className={`mb-5 flex h-10 w-10 items-center justify-center rounded-xl border ${
-                  feature.accent === 'cyan' ? 'border-cyan/20 bg-cyan/8 text-cyan' :
-                  feature.accent === 'blue' ? 'border-blue-400/20 bg-blue-400/8 text-blue-400' :
-                  feature.accent === 'yellow' ? 'border-yellow-400/20 bg-yellow-400/8 text-yellow-400' :
-                  'border-red-400/20 bg-red-400/8 text-red-400'
-                }`}>
+                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 group-hover:bg-white group-hover:text-black transition-all duration-300">
                   {feature.icon}
                 </div>
 
@@ -303,12 +298,7 @@ export default function HomePage() {
                 </p>
 
                 {/* Bottom hover line */}
-                <div className={`absolute bottom-0 left-6 right-6 h-px transition-opacity duration-500 ${
-                  feature.accent === 'cyan' ? 'bg-gradient-to-r from-transparent via-cyan/30 to-transparent' :
-                  feature.accent === 'blue' ? 'bg-gradient-to-r from-transparent via-blue-400/30 to-transparent' :
-                  feature.accent === 'yellow' ? 'bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent' :
-                  'bg-gradient-to-r from-transparent via-red-400/30 to-transparent'
-                } opacity-0 group-hover:opacity-100`} />
+                <div className="absolute bottom-0 left-6 right-6 h-px transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100" />
               </motion.div>
             ))}
           </motion.div>
@@ -331,7 +321,7 @@ export default function HomePage() {
               <motion.div
                 key={stat.label}
                 variants={fadeUp}
-                className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-cyan/15 hover:bg-cyan/[0.03]"
+                className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/15 hover:bg-white/[0.03]"
               >
                 <div className="stat-shimmer display-font text-5xl font-black leading-none tracking-tight lg:text-[3.5rem]">
                   {stat.value}
@@ -378,7 +368,7 @@ export default function HomePage() {
               <motion.div variants={fadeUp} className="mt-8">
                 <Link
                   href="/plan"
-                  className="cyan-button group inline-flex items-center gap-3 rounded-full px-7 py-3 text-sm font-semibold"
+                  className="glass-button group inline-flex items-center gap-3 rounded-full px-7 py-3 text-sm font-semibold"
                 >
                   Open Planner
                   <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1">
@@ -396,7 +386,7 @@ export default function HomePage() {
                   <span className="status-dot" />
                   <span className="text-[11px] uppercase tracking-[0.2em] text-white/40">Live AQI Corridor</span>
                 </div>
-                <span className="rounded-full border border-cyan/25 bg-cyan/8 px-3 py-1 text-[10px] font-medium text-cyan">
+                <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[10px] font-medium text-white/70">
                   Active
                 </span>
               </div>
@@ -406,13 +396,13 @@ export default function HomePage() {
                 <svg viewBox="0 0 560 180" className="h-full w-full">
                   <defs>
                     <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#00FFD1" stopOpacity="0.9" />
-                      <stop offset="50%" stopColor="#FFD166" stopOpacity="0.7" />
-                      <stop offset="100%" stopColor="#FF3B5C" stopOpacity="0.8" />
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
+                      <stop offset="50%" stopColor="#a0a0a0" stopOpacity="0.6" />
+                      <stop offset="100%" stopColor="#ffffff" stopOpacity="0.8" />
                     </linearGradient>
                     <linearGradient id="routeGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#00FFD1" stopOpacity="0.3" />
-                      <stop offset="100%" stopColor="#00c4ff" stopOpacity="0.2" />
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#808080" stopOpacity="0.1" />
                     </linearGradient>
                     <filter id="glow">
                       <feGaussianBlur stdDeviation="3" result="blur" />
@@ -434,22 +424,22 @@ export default function HomePage() {
                   {/* Route paths */}
                   <path d="M20 130 C80 70, 140 110, 220 80 C280 55, 360 100, 440 60 C480 42, 510 70, 540 50" fill="none" stroke="url(#routeGrad)" strokeWidth="3" filter="url(#glow)" strokeLinecap="round" />
                   <path d="M20 145 C100 105, 180 140, 280 115 C360 92, 420 125, 540 90" fill="none" stroke="url(#routeGrad2)" strokeWidth="1.5" strokeDasharray="6 4" strokeLinecap="round" />
-                  <path d="M20 155 C120 125, 240 150, 340 130 C420 112, 480 140, 540 115" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeLinecap="round" />
+                  <path d="M20 155 C120 125, 240 150, 340 130 C420 112, 480 140, 540 115" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" strokeLinecap="round" />
 
                   {/* Data points */}
-                  <circle cx="20" cy="130" r="4" fill="#00ffd1" opacity="0.8" />
-                  <circle cx="220" cy="80" r="3" fill="#ffd166" opacity="0.7" />
-                  <circle cx="440" cy="60" r="3" fill="#ff3b5c" opacity="0.7" />
-                  <circle cx="540" cy="50" r="4" fill="#00ffd1" opacity="0.8" />
+                  <circle cx="20" cy="130" r="4" fill="white" opacity="0.8" />
+                  <circle cx="220" cy="80" r="3" fill="white" opacity="0.6" />
+                  <circle cx="440" cy="60" r="3" fill="white" opacity="0.6" />
+                  <circle cx="540" cy="50" r="4" fill="white" opacity="0.8" />
                 </svg>
               </div>
 
               {/* Stats row */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: 'Cleanest', value: 'AQI 38', color: 'text-cyan' },
-                  { label: 'Balanced', value: 'AQI 56', color: 'text-warn' },
-                  { label: 'Fastest', value: 'AQI 74', color: 'text-danger' },
+                  { label: 'Cleanest', value: 'AQI 38', color: 'text-white' },
+                  { label: 'Balanced', value: 'AQI 56', color: 'text-white/60' },
+                  { label: 'Fastest', value: 'AQI 74', color: 'text-white/40' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl border border-white/[0.06] bg-black/40 p-3">
                     <div className="text-[10px] uppercase tracking-[0.18em] text-white/35">{item.label}</div>
@@ -462,7 +452,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══ Footer ═══ */}
       <footer className="relative z-10 border-t border-white/[0.06] px-6 py-10 sm:px-10">
         <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-6 sm:flex-row sm:justify-between">
           <div className="flex items-center gap-3">

@@ -43,30 +43,30 @@ export default function AQIBadge({ value, compact = false }: AQIBadgeProps) {
   }
 
   return (
-    <div className="panel-edge relative rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
-      <div className="text-[9px] uppercase tracking-[0.22em] text-white/30">Avg AQI</div>
+    <div className="glass-card panel-edge relative rounded-2xl p-4">
+      <div className="text-[9px] uppercase tracking-[0.22em] text-white/40 font-medium">Avg AQI</div>
       <div className="mt-2 flex items-end justify-between gap-3">
         <motion.span
           style={{ color }}
-          className="number-display text-4xl font-black leading-none"
+          className="number-display text-4xl font-black leading-none drop-shadow-sm"
         >
           {rounded}
         </motion.span>
         <span
           style={{ color }}
-          className="pb-1 text-[10px] font-semibold uppercase tracking-[0.15em] opacity-70"
+          className="pb-1 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80"
         >
           {level}
         </span>
       </div>
 
-      {/* Glow ring */}
+      {/* Glow dot */}
       <div
-        className="absolute -right-1 -top-1 h-3 w-3 rounded-full"
+        className="absolute -right-1 -top-1 h-2 w-2 rounded-full"
         style={{
           backgroundColor: color,
-          boxShadow: `0 0 12px ${color}80, 0 0 4px ${color}`,
-          opacity: 0.6,
+          boxShadow: `0 0 12px ${color}`,
+          opacity: 0.8,
         }}
       />
     </div>

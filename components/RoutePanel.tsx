@@ -131,8 +131,8 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
         <label className="block">
           <span className="mb-1.5 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-white/35">
             <svg viewBox="0 0 12 12" fill="none" className="h-3 w-3">
-              <circle cx="6" cy="6" r="3" stroke="#00ffd1" strokeWidth="1.2" />
-              <circle cx="6" cy="6" r="1" fill="#00ffd1" />
+              <circle cx="6" cy="6" r="3" stroke="currentColor" strokeWidth="1.2" />
+              <circle cx="6" cy="6" r="1" fill="currentColor" />
             </svg>
             Origin
           </span>
@@ -140,7 +140,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
             {...register('source', { required: true })}
             list="cities"
             autoComplete="off"
-            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2.5 text-[13px] text-white placeholder:text-white/20 transition-all hover:border-white/15 focus:border-cyan/40 focus:bg-white/[0.04] focus:outline-none"
+            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2.5 text-[13px] text-white placeholder:text-white/20 transition-all hover:border-white/15 focus:border-white/30 focus:bg-white/[0.04] focus:outline-none"
             placeholder="e.g., San Francisco, CA"
           />
         </label>
@@ -148,7 +148,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
         <label className="block">
           <span className="mb-1.5 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-white/35">
             <svg viewBox="0 0 12 12" fill="none" className="h-3 w-3">
-              <path d="M6 2v8M2 6l4 4 4-4" stroke="#ff3b5c" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M6 2v8M2 6l4 4 4-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Destination
           </span>
@@ -156,7 +156,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
             {...register('destination', { required: true })}
             list="cities"
             autoComplete="off"
-            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2.5 text-[13px] text-white placeholder:text-white/20 transition-all hover:border-white/15 focus:border-cyan/40 focus:bg-white/[0.04] focus:outline-none"
+            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2.5 text-[13px] text-white placeholder:text-white/20 transition-all hover:border-white/15 focus:border-white/30 focus:bg-white/[0.04] focus:outline-none"
             placeholder="e.g., Berkeley, CA"
           />
         </label>
@@ -184,7 +184,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
               onClick={() => setTransportMode(mode)}
               className={`group flex flex-col items-center gap-1.5 rounded-xl border px-2 py-2.5 text-[11px] transition-all duration-300 ${
                 transportMode === mode
-                  ? 'border-cyan/30 bg-cyan/8 text-cyan shadow-[0_0_20px_rgba(0,255,209,0.12)]'
+                  ? 'border-white/30 bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.08)]'
                   : 'border-white/[0.06] bg-white/[0.02] text-white/40 hover:border-white/15 hover:text-white/60'
               }`}
               aria-pressed={transportMode === mode}
@@ -200,7 +200,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
       <button
         type="submit"
         disabled={loading || formState.isSubmitting}
-        className="cyan-button mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13px] font-semibold disabled:cursor-not-allowed disabled:opacity-40"
+        className="glass-button mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13px] font-semibold disabled:cursor-not-allowed disabled:opacity-40"
       >
         {loading ? (
           <>

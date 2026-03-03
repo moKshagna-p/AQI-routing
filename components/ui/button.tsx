@@ -4,21 +4,21 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:pointer-events-none disabled:opacity-45',
   {
     variants: {
       variant: {
-        default: 'bg-white text-black hover:bg-white/90',
-        secondary: 'bg-white/10 text-white hover:bg-white/20',
-        outline: 'border border-white/20 bg-transparent text-white hover:bg-white/10',
-        ghost: 'text-white/80 hover:bg-white/10 hover:text-white',
+        default: 'glass-button glass-button--filled text-white',
+        secondary: 'glass-button glass-button--soft text-white/90',
+        outline: 'glass-button glass-button--outline text-white',
+        ghost: 'glass-button glass-button--ghost text-white/80 hover:text-white',
         destructive: 'bg-danger text-white hover:bg-danger/90'
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10'
+        default: 'h-11 px-5 py-2.5',
+        sm: 'h-9 px-4 text-xs',
+        lg: 'h-12 px-8',
+        icon: 'h-12 w-12 p-0'
       }
     },
     defaultVariants: {
@@ -37,7 +37,14 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        data-size={size ?? 'default'}
+        ref={ref}
+        {...props}
+      />
+    );
   }
 );
 Button.displayName = 'Button';

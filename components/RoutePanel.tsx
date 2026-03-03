@@ -91,7 +91,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
   });
 
   return (
-    <Card className="absolute left-3 top-20 z-[1000] w-[calc(100%-1.5rem)] border-white/30 bg-black/75 backdrop-blur sm:left-6 sm:top-24 sm:w-[420px]">
+    <Card className="absolute left-3 top-20 z-[1000] w-[calc(100%-1.5rem)] border-white/30 bg-black/75 backdrop-blur-sm sm:left-6 sm:top-24 sm:w-[420px] sm:backdrop-blur">
       <CardHeader className="pb-4">
         <CardTitle className="display-font flex items-center gap-2 text-2xl">
           <Route className="h-5 w-5" />
@@ -105,12 +105,12 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="source">Origin</Label>
-            <Input id="source" placeholder="e.g., Times Square, New York" autoComplete="off" {...register('source', { required: true })} />
+            <Input id="source" placeholder="e.g., Times Square, New York…" autoComplete="off" {...register('source', { required: true })} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="destination">Destination</Label>
-            <Input id="destination" placeholder="e.g., Brooklyn Bridge" autoComplete="off" {...register('destination', { required: true })} />
+            <Input id="destination" placeholder="e.g., Brooklyn Bridge…" autoComplete="off" {...register('destination', { required: true })} />
           </div>
 
           <div className="rounded-lg border border-white/20 bg-black/35 p-3">
@@ -145,7 +145,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
             {loading || resolving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {resolving ? 'Resolving places...' : 'Analyzing routes...'}
+                {resolving ? 'Resolving Places…' : 'Analyzing Routes…'}
               </>
             ) : (
               'Find Lowest AQI Route'

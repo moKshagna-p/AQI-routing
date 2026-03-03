@@ -1,73 +1,52 @@
 # AirRoute
 
-AirRoute is a Next.js 14 frontend prototype that prioritizes cleaner air exposure over raw travel time.
+AirRoute is a Next.js 14 planner that finds routes with lower air-pollution exposure while preserving practical travel time.
 
 ## Stack
 
 - Next.js 14 (App Router)
 - Tailwind CSS
+- shadcn/ui components
 - Framer Motion
 - Leaflet + react-leaflet
 - Zustand
 - React Hook Form
 - Axios
 
-## Features in this phase
+## Core features
 
-- Cinematic landing page with animated AQI particles, ticker, and CTA
-- Full-screen planner with floating glass panels
-- Source/destination autocomplete (demo city list)
-- Speed vs Clean Air preference slider
-- Transport modes: Walk, Bike, Car
-- Route simulation variants:
-  - Cleanest (longer distance, lower AQI)
-  - Fastest (shortest distance, higher AQI)
-  - Balanced (middle ground)
-- AQI-based route scoring algorithm
-- Animated route draw + AQI heat points
-- AQI info modal and designed empty/error states
+- Real place-to-place planning (no demo city lock)
+- Geocoding via Nominatim, with Photon fallback
+- Routing via OSRM (no signup, no credit card)
+- Live AQI sampling from Open-Meteo Air Quality API (no API key required)
+- Route comparison with `Cleanest`, `Fastest`, and `Balanced` labels
+- AQI exposure scoring + PM2.5/PM10/Ozone breakdowns
+- Interactive map with selected-route AQI overlay
 
 ## Getting started
 
 1. Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
-2. Start development server:
+2. Configure environment values in `.env`:
 
 ```bash
-npm run dev
+NEXT_PUBLIC_OSRM_BASE_URL=https://router.project-osrm.org
 ```
 
-3. Open `http://localhost:3000`.
+3. Start development server:
 
-## Project structure
-
-```text
-app/
-  page.tsx
-  plan/page.tsx
-  layout.tsx
-components/
-  Map.tsx
-  RoutePanel.tsx
-  ResultPanel.tsx
-  AQIBadge.tsx
-  SliderControl.tsx
-  ParticlesBG.tsx
-lib/
-  aqiUtils.ts
-  routeUtils.ts
-  mockData.ts
-  store.ts
-styles/
-  globals.css
+```bash
+bun run dev
 ```
 
-## Data notes
+4. Open `http://localhost:3000`.
 
-- Routing is fetched from OSRM demo server (`router.project-osrm.org`) with graceful fallback to local distance approximation.
-- AQI route waypoints are demo-simulated for this phase.
-- WAQI/OpenAQ integration points are ready for expansion in backend phase.
+## Notes
+
+- You do not need OpenAQ, WAQI, or Mapbox keys.
+- Base map uses free CARTO tiles and route computation uses OSRM.
+- AQI data is fetched from Open-Meteo and cached per rounded coordinate in memory.

@@ -3,6 +3,7 @@
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect } from 'react';
 import { getAQIColor, getAQILevel } from '@/lib/aqiUtils';
+import { Badge } from '@/components/ui/badge';
 
 type AQIBadgeProps = {
   value: number;
@@ -18,57 +19,35 @@ export default function AQIBadge({ value, compact = false }: AQIBadgeProps) {
   useEffect(() => {
     const controls = animate(count, value, {
       duration: 0.8,
-      ease: 'easeOut',
+      ease: 'easeOut'
     });
     return () => controls.stop();
   }, [count, value]);
 
   if (compact) {
     return (
-      <div className="flex flex-col items-end gap-0.5">
-        <motion.span
-          style={{ color }}
-          className="number-display text-2xl font-black leading-none"
-        >
+      <div className="flex flex-col items-end gap-1">
+        <motion.span style={{ color }} className="number-display text-2xl font-black leading-none">
           {rounded}
         </motion.span>
-        <span
-          style={{ color }}
-          className="text-[9px] font-semibold uppercase tracking-[0.15em] opacity-70"
-        >
+        <Badge variant="secondary" className="text-[10px]" style={{ color }}>
           {level}
-        </span>
+        </Badge>
       </div>
     );
   }
 
   return (
-    <div className="glass-card panel-edge relative rounded-2xl p-4">
-      <div className="text-[9px] uppercase tracking-[0.22em] text-white/40 font-medium">Avg AQI</div>
+    <div className="rounded-lg border border-white/20 bg-black/40 p-3">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-white/55">Average AQI</div>
       <div className="mt-2 flex items-end justify-between gap-3">
-        <motion.span
-          style={{ color }}
-          className="number-display text-4xl font-black leading-none drop-shadow-sm"
-        >
+        <motion.span style={{ color }} className="number-display text-4xl font-black leading-none">
           {rounded}
         </motion.span>
-        <span
-          style={{ color }}
-          className="pb-1 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80"
-        >
+        <Badge variant="secondary" style={{ color }}>
           {level}
-        </span>
+        </Badge>
       </div>
-
-      {/* Glow dot */}
-      <div
-        className="absolute -right-1 -top-1 h-2 w-2 rounded-full"
-        style={{
-          backgroundColor: color,
-          boxShadow: `0 0 12px ${color}`,
-          opacity: 0.8,
-        }}
-      />
     </div>
   );
 }

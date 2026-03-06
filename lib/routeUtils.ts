@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { clampAQI, toExposureScore } from './aqiUtils';
+import { clampAQI, toExposureScore, adjustedAQI, computeRespiratoryDose, type SensitivityProfile } from './aqiUtils';
 
 export type TransportMode = 'walk' | 'bike' | 'car';
 export type RouteVariantLabel = 'Cleanest' | 'Fastest' | 'Balanced';
@@ -16,6 +16,7 @@ export type RouteVariant = {
   distanceKm: number;
   etaMin: number;
   avgAQI: number;
+  adjustedAvgAQI: number;
   exposureScore: string;
   score: number;
   waypoints: Waypoint[];
@@ -25,6 +26,12 @@ export type RouteVariant = {
     pm25: number;
     pm10: number;
     o3: number;
+  };
+  respiratoryDose: {
+    doseUg: number;
+    modeLabel: string;
+    ventilationRate: number;
+    comparisonToCar: number;
   };
 };
 
@@ -279,8 +286,9 @@ export async function generateRouteVariants(params: {
   destination: [number, number];
   transportMode: TransportMode;
   userPreference: number;
+  sensitivityProfile?: SensitivityProfile;
 }): Promise<{ routes: RouteVariant[]; coordinates: [number, number][] }> {
-  const { source, destination, transportMode, userPreference } = params;
+  const { source, destination, transportMode, userPreference, sensitivityProfile = 'normal' } = params;
 
   let providerRoutes: ProviderRoute[] = [];
 
@@ -331,7 +339,12 @@ export async function generateRouteVariants(params: {
 
   const scored = withAQI.map((route) => ({
     ...route,
-    score: routeScore(route, maxDistance, maxDuration, userPreference)
+    score: routeScore(
+      { ...route, avgAQI: adjustedAQI(route.avgAQI, sensitivityProfile) },
+      maxDistance,
+      maxDuration,
+      userPreference
+    )
   }));
 
   const { cleanest, fastest, balanced } = pickIndexesByIntent(scored);
@@ -348,12 +361,14 @@ export async function generateRouteVariants(params: {
       distanceKm: route.distanceKm,
       etaMin: route.etaMin,
       avgAQI: route.avgAQI,
+      adjustedAvgAQI: adjustedAQI(route.avgAQI, sensitivityProfile),
       exposureScore: toExposureScore(route.avgAQI),
       score: route.score,
       waypoints: route.waypoints,
       geometry: route.geometry,
       geometryAQI: route.geometryAQI,
-      breakdown: route.breakdown
+      breakdown: route.breakdown,
+      respiratoryDose: computeRespiratoryDose(route.breakdown.pm25, route.etaMin, transportMode)
     }))
     .sort((a, b) => a.score - b.score)
     .slice(0, 3);
@@ -361,4 +376,91 @@ export async function generateRouteVariants(params: {
   const topCoordinates = routes[0]?.geometry ?? providerRoutes[0].coordinates;
 
   return { routes, coordinates: topCoordinates };
+}
+
+/* ══════════════════════════════════════════
+   "Best Time to Leave" — Hourly AQI Forecast
+   ══════════════════════════════════════════ */
+
+type HourlyForecastPoint = {
+  hour: string;
+  avgAQI: number;
+};
+
+type OpenMeteoForecastResponse = {
+  hourly: {
+    time: string[];
+    us_aqi: Array<number | null>;
+  };
+};
+
+/**
+ * Sample AQI forecasts along a route's geometry for the next 24 hours.
+ * Uses up to 6 sample points from the route to keep API calls reasonable (async-parallel).
+ */
+export async function fetchHourlyRouteForecast(
+  geometry: [number, number][]
+): Promise<HourlyForecastPoint[]> {
+  const sampleIndexes = pickSampleIndexes(geometry.length, 6);
+  const samplePoints = sampleIndexes.map((idx) => geometry[idx]);
+
+  // Fetch forecast for all sample points in parallel (async-parallel)
+  const forecasts = await Promise.all(
+    samplePoints.map(async (point) => {
+      try {
+        const { data } = await axios.get<OpenMeteoForecastResponse>(
+          'https://air-quality-api.open-meteo.com/v1/air-quality',
+          {
+            params: {
+              latitude: point[0],
+              longitude: point[1],
+              hourly: 'us_aqi',
+              timezone: 'auto',
+              forecast_days: 2
+            },
+            timeout: 5000
+          }
+        );
+        return data.hourly;
+      } catch {
+        return null;
+      }
+    })
+  );
+
+  const validForecasts = forecasts.filter(
+    (f): f is { time: string[]; us_aqi: Array<number | null> } => f !== null
+  );
+  if (!validForecasts.length) return [];
+
+  // Use the first forecast's time array as reference
+  const times = validForecasts[0].time;
+  const now = new Date();
+
+  // Average AQI across all sample points for each hour
+  const hourlyData: HourlyForecastPoint[] = [];
+
+  for (let i = 0; i < times.length && hourlyData.length < 24; i++) {
+    const time = new Date(times[i]);
+    if (time < now) continue;
+
+    let sum = 0;
+    let count = 0;
+    for (const forecast of validForecasts) {
+      const val = forecast.us_aqi[i];
+      if (val !== null && val !== undefined) {
+        sum += val;
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      hourlyData.push({
+        hour: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
+        avgAQI: clampAQI(sum / count)
+      });
+    }
+  }
+
+  return hourlyData;
 }

@@ -1,12 +1,13 @@
 'use client';
 
-import { Car, Bike, PersonStanding, Loader2, Route } from 'lucide-react';
+import { Car, Bike, PersonStanding, Loader2, Route, Heart, Stethoscope, Baby, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SliderControl from './SliderControl';
 import { usePlanStore } from '@/lib/store';
 import { geocodePlace } from '@/lib/geocoding';
 import { type TransportMode } from '@/lib/routeUtils';
+import { type SensitivityProfile, getSensitivityLabel } from '@/lib/aqiUtils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -40,16 +41,26 @@ const modeMeta: Array<{ mode: TransportMode; label: string; icon: JSX.Element }>
   }
 ];
 
+const profileMeta: Array<{ profile: SensitivityProfile; icon: JSX.Element }> = [
+  { profile: 'normal', icon: <Heart className="h-3.5 w-3.5" /> },
+  { profile: 'asthmatic', icon: <Stethoscope className="h-3.5 w-3.5" /> },
+  { profile: 'child', icon: <Baby className="h-3.5 w-3.5" /> },
+  { profile: 'elderly', icon: <Users className="h-3.5 w-3.5" /> },
+  { profile: 'pregnant', icon: <Heart className="h-3.5 w-3.5" /> }
+];
+
 export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
   const {
     sourceLabel,
     destinationLabel,
     preference,
     transportMode,
+    sensitivityProfile,
     loading,
     setLocations,
     setPreference,
     setTransportMode,
+    setSensitivityProfile,
     setError
   } = usePlanStore();
 
@@ -105,12 +116,12 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="source">Origin</Label>
-            <Input id="source" placeholder="e.g., Times Square, New York…" autoComplete="off" {...register('source', { required: true })} />
+            <Input id="source" placeholder="e.g., Times Square, New York..." autoComplete="off" {...register('source', { required: true })} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="destination">Destination</Label>
-            <Input id="destination" placeholder="e.g., Brooklyn Bridge…" autoComplete="off" {...register('destination', { required: true })} />
+            <Input id="destination" placeholder="e.g., Brooklyn Bridge..." autoComplete="off" {...register('destination', { required: true })} />
           </div>
 
           <div className="rounded-lg border border-white/20 bg-black/35 p-3">
@@ -141,11 +152,42 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
             </ToggleGroup>
           </div>
 
+          {/* Health Profile selector */}
+          <div className="space-y-2">
+            <Label>Health Profile</Label>
+            <ToggleGroup
+              type="single"
+              value={sensitivityProfile}
+              onValueChange={(value) => {
+                if (value) setSensitivityProfile(value as SensitivityProfile);
+              }}
+              className="grid grid-cols-5 gap-1.5"
+            >
+              {profileMeta.map((p) => (
+                <ToggleGroupItem
+                  key={p.profile}
+                  value={p.profile}
+                  variant="outline"
+                  className="flex h-9 flex-col items-center justify-center gap-0.5 text-[9px] data-[state=on]:bg-white data-[state=on]:text-black"
+                  title={getSensitivityLabel(p.profile)}
+                >
+                  {p.icon}
+                  <span className="leading-none">{getSensitivityLabel(p.profile).slice(0, 5)}</span>
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            {sensitivityProfile !== 'normal' && (
+              <p className="text-[10px] text-white/50">
+                AQI thresholds adjusted for {getSensitivityLabel(sensitivityProfile).toLowerCase()} sensitivity
+              </p>
+            )}
+          </div>
+
           <Button type="submit" className="w-full" disabled={loading || formState.isSubmitting || resolving}>
             {loading || resolving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {resolving ? 'Resolving Places…' : 'Analyzing Routes…'}
+                {resolving ? 'Resolving Places...' : 'Analyzing Routes...'}
               </>
             ) : (
               'Find Lowest AQI Route'

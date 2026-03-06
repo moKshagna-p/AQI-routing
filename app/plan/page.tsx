@@ -3,12 +3,13 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMemo, useState } from 'react';
-import { ArrowLeft, Info } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowLeft, Info, Link2, Check } from 'lucide-react';
 import RoutePanel from '@/components/RoutePanel';
 import ResultPanel from '@/components/ResultPanel';
-import { generateRouteVariants } from '@/lib/routeUtils';
-import { usePlanStore } from '@/lib/store';
+import { generateRouteVariants, fetchHourlyRouteForecast } from '@/lib/routeUtils';
+import { usePlanStore, storeToURLParams, parseURLParams } from '@/lib/store';
+import DepartureChart from '@/components/DepartureChart';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -39,33 +40,89 @@ export default function PlanPage() {
     mapCoordinates,
     transportMode,
     preference,
+    sensitivityProfile,
     loading,
     error,
+    hourlyForecast,
     setLoading,
     setResult,
     selectRoute,
-    setError
+    setError,
+    setLocations,
+    setTransportMode,
+    setPreference,
+    setSensitivityProfile,
+    setHourlyForecast
   } = usePlanStore();
 
   const [showAQIInfo, setShowAQIInfo] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const urlInitRef = useRef(false);
 
   const sourcePoint = useMemo<[number, number]>(() => source ?? [40.758, -73.9855], [source]);
   const destinationPoint = useMemo<[number, number]>(() => destination ?? [40.7061, -74.0086], [destination]);
 
-  const handleFindRoute = async ({ source, destination }: { source: [number, number]; destination: [number, number] }) => {
+  const handleFindRoute = useCallback(async ({ source, destination }: { source: [number, number]; destination: [number, number] }) => {
     try {
       setLoading(true);
+      setHourlyForecast(null);
       const result = await generateRouteVariants({
         source,
         destination,
         userPreference: preference,
-        transportMode
+        transportMode,
+        sensitivityProfile
       });
       setResult(result.routes, result.coordinates);
+
+      // Update URL with route params (async-defer-await: only update after success)
+      const state = usePlanStore.getState();
+      const params = storeToURLParams(state);
+      window.history.replaceState(null, '', `/plan?${params}`);
+
+      // Fetch forecast non-blocking (don't delay route results)
+      const topGeometry = result.routes[0]?.geometry;
+      if (topGeometry?.length) {
+        fetchHourlyRouteForecast(topGeometry).then((forecast) => {
+          if (forecast.length) setHourlyForecast(forecast);
+        });
+      }
     } catch {
       setError('Route computation failed. Check the location names and try again.');
     }
-  };
+  }, [preference, transportMode, sensitivityProfile, setLoading, setResult, setError, setHourlyForecast]);
+
+  /* ── Initialize from URL params on first mount ── */
+  useEffect(() => {
+    if (urlInitRef.current) return;
+    urlInitRef.current = true;
+
+    const parsed = parseURLParams(window.location.search);
+    if (!parsed?.source || !parsed?.destination) return;
+
+    setLocations({
+      sourceLabel: parsed.sourceLabel ?? 'Origin',
+      destinationLabel: parsed.destinationLabel ?? 'Destination',
+      source: parsed.source,
+      destination: parsed.destination
+    });
+    if (parsed.mode) setTransportMode(parsed.mode);
+    if (parsed.preference !== null) setPreference(parsed.preference);
+    if (parsed.sensitivityProfile) setSensitivityProfile(parsed.sensitivityProfile);
+
+    // Auto-trigger route computation from URL
+    handleFindRoute({ source: parsed.source, destination: parsed.destination });
+  }, [handleFindRoute, setLocations, setTransportMode, setPreference, setSensitivityProfile]);
+
+  const handleCopyLink = useCallback(() => {
+    const state = usePlanStore.getState();
+    const params = storeToURLParams(state);
+    const url = `${window.location.origin}/plan?${params}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
+  }, []);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -94,17 +151,29 @@ export default function PlanPage() {
               </DialogHeader>
 
               <div className="space-y-2 text-sm">
-                <div className="rounded-md border border-emerald-400/40 bg-emerald-400/10 p-3">
-                  <p className="font-semibold text-emerald-300">0-50: Good</p>
-                  <p className="text-white/70">Air quality is considered satisfactory.</p>
+                <div className="rounded-md border p-3" style={{ borderColor: 'rgba(0,228,0,0.4)', background: 'rgba(0,228,0,0.08)' }}>
+                  <p className="font-semibold" style={{ color: '#00E400' }}>0-50: Good</p>
+                  <p className="text-white/70">Air quality is satisfactory.</p>
                 </div>
-                <div className="rounded-md border border-amber-300/40 bg-amber-300/10 p-3">
-                  <p className="font-semibold text-amber-200">51-100: Moderate</p>
+                <div className="rounded-md border p-3" style={{ borderColor: 'rgba(255,209,102,0.4)', background: 'rgba(255,209,102,0.08)' }}>
+                  <p className="font-semibold" style={{ color: '#FFD166' }}>51-100: Moderate</p>
                   <p className="text-white/70">Acceptable for most people.</p>
                 </div>
-                <div className="rounded-md border border-rose-400/40 bg-rose-400/10 p-3">
-                  <p className="font-semibold text-rose-300">101+: Unhealthy</p>
-                  <p className="text-white/70">Sensitive groups should limit exposure.</p>
+                <div className="rounded-md border p-3" style={{ borderColor: 'rgba(255,126,0,0.4)', background: 'rgba(255,126,0,0.08)' }}>
+                  <p className="font-semibold" style={{ color: '#FF7E00' }}>101-150: Unhealthy for Sensitive Groups</p>
+                  <p className="text-white/70">Sensitive groups may experience effects.</p>
+                </div>
+                <div className="rounded-md border p-3" style={{ borderColor: 'rgba(255,59,92,0.4)', background: 'rgba(255,59,92,0.08)' }}>
+                  <p className="font-semibold" style={{ color: '#FF3B5C' }}>151-200: Unhealthy</p>
+                  <p className="text-white/70">Everyone may begin to experience effects.</p>
+                </div>
+                <div className="rounded-md border p-3" style={{ borderColor: 'rgba(143,63,151,0.4)', background: 'rgba(143,63,151,0.08)' }}>
+                  <p className="font-semibold" style={{ color: '#8F3F97' }}>201-300: Very Unhealthy</p>
+                  <p className="text-white/70">Health alert: serious risk for everyone.</p>
+                </div>
+                <div className="rounded-md border p-3" style={{ borderColor: 'rgba(126,0,35,0.4)', background: 'rgba(126,0,35,0.08)' }}>
+                  <p className="font-semibold" style={{ color: '#FF4466' }}>301-500: Hazardous</p>
+                  <p className="text-white/70">Emergency conditions. Avoid all outdoor activity.</p>
                 </div>
               </div>
             </DialogContent>
@@ -123,6 +192,29 @@ export default function PlanPage() {
 
       <RoutePanel onFindRoute={handleFindRoute} />
       <ResultPanel routes={routes} selectedRouteId={selectedRouteId} onSelect={selectRoute} />
+
+      {/* Best Time to Leave chart */}
+      {hourlyForecast && hourlyForecast.length > 0 && (
+        <DepartureChart forecast={hourlyForecast} />
+      )}
+
+      {/* Copy Link button */}
+      {routes.length > 0 && (
+        <div className="absolute right-3 top-20 z-[1200] sm:right-6 sm:top-24">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopyLink}
+            className="rounded-full border border-white/20 bg-black/70 backdrop-blur"
+          >
+            {linkCopied ? (
+              <><Check className="mr-1 h-3.5 w-3.5 text-green-400" /> Copied</>
+            ) : (
+              <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
+            )}
+          </Button>
+        </div>
+      )}
 
       <AnimatePresence>
         {error && (

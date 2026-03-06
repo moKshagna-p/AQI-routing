@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { useEffect, useMemo, useState } from 'react';
 import { CircleMarker, MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import { Layers, Loader2 } from 'lucide-react';
-import { getAQIColor } from '@/lib/aqiUtils';
+import { AQI_TIERS, getAQIColor } from '@/lib/aqiUtils';
 import { type RouteVariant } from '@/lib/routeUtils';
 import { Button } from '@/components/ui/button';
 
@@ -21,6 +21,27 @@ const destIcon = L.divIcon({
   iconSize: [14, 14],
   iconAnchor: [7, 7]
 });
+
+/* ── Static AQI Legend (hoisted outside component per rendering-hoist-jsx) ── */
+const AQILegend = (
+  <div className="absolute bottom-5 right-5 z-[1000] rounded-lg border border-white/15 bg-black/80 p-2.5 backdrop-blur-sm">
+    <div className="mb-1.5 text-[9px] uppercase tracking-widest text-white/50">AQI Scale</div>
+    <div className="flex flex-col gap-1">
+      {AQI_TIERS.map((tier, i) => {
+        const prevMax = i > 0 ? AQI_TIERS[i - 1].max + 1 : 0;
+        return (
+          <div key={tier.label} className="flex items-center gap-2 text-[10px] text-white/70">
+            <span
+              className="inline-block h-2.5 w-5 rounded-sm"
+              style={{ backgroundColor: tier.color }}
+            />
+            <span className="number-display">{prevMax}-{tier.max}</span>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+);
 
 type MapProps = {
   source: [number, number];
@@ -143,6 +164,7 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
           ))}
       </MapContainer>
 
+      {/* Controls row */}
       <div className="absolute bottom-5 left-5 z-[1000] flex rounded-lg border border-white/20 bg-black/70 p-1 backdrop-blur">
         <Button variant={showHeatmap ? 'secondary' : 'ghost'} size="sm" onClick={() => setShowHeatmap(true)}>
           <Layers className="mr-1 h-3.5 w-3.5" /> AQI Overlay
@@ -152,14 +174,17 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
         </Button>
       </div>
 
-      {loading && (
+      {/* AQI Legend */}
+      {showHeatmap && routes.length > 0 && AQILegend}
+
+      {loading ? (
         <div className="absolute inset-0 z-[1100] grid place-items-center bg-black/65 backdrop-blur-sm">
           <div className="flex items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-4 py-3 text-sm text-white">
             <Loader2 className="h-4 w-4 animate-spin" />
             Computing AQI-aware routes...
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

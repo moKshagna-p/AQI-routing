@@ -5,12 +5,14 @@ import { Clock } from 'lucide-react';
 import { getAQIColor } from '@/lib/aqiUtils';
 import { type HourlyForecastPoint } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 type DepartureChartProps = {
   forecast: HourlyForecastPoint[];
+  className?: string;
 };
 
-export default function DepartureChart({ forecast }: DepartureChartProps) {
+export default function DepartureChart({ forecast, className }: DepartureChartProps) {
   // Show up to 12 hours for readability
   const displayData = forecast.slice(0, 12);
 
@@ -38,7 +40,7 @@ export default function DepartureChart({ forecast }: DepartureChartProps) {
   const chartHeight = 72;
 
   return (
-    <Card className="absolute left-3 bottom-20 z-[1000] w-[calc(100%-1.5rem)] border-white/20 bg-black/80 backdrop-blur sm:bottom-auto sm:left-6 sm:top-[26rem] sm:w-[420px]">
+    <Card className={cn('w-full border-white/20 bg-black/80 backdrop-blur sm:w-[420px]', className)}>
       <CardHeader className="pb-2 pt-3">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold">
           <Clock className="h-4 w-4 text-white/60" />

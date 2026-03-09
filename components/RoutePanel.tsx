@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { cn } from '@/lib/utils';
 
 type RouteFormValues = {
   source: string;
@@ -21,6 +22,7 @@ type RouteFormValues = {
 
 type RoutePanelProps = {
   onFindRoute: (values: { source: [number, number]; destination: [number, number] }) => Promise<void>;
+  className?: string;
 };
 
 const modeMeta: Array<{ mode: TransportMode; label: string; icon: JSX.Element }> = [
@@ -49,7 +51,7 @@ const profileMeta: Array<{ profile: SensitivityProfile; icon: JSX.Element }> = [
   { profile: 'pregnant', icon: <Heart className="h-3.5 w-3.5" /> }
 ];
 
-export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
+export default function RoutePanel({ onFindRoute, className }: RoutePanelProps) {
   const {
     sourceLabel,
     destinationLabel,
@@ -102,7 +104,7 @@ export default function RoutePanel({ onFindRoute }: RoutePanelProps) {
   });
 
   return (
-    <Card className="absolute left-3 top-20 z-[1000] w-[calc(100%-1.5rem)] border-white/30 bg-black/75 backdrop-blur-sm sm:left-6 sm:top-24 sm:w-[420px] sm:backdrop-blur">
+    <Card className={cn('w-full border-white/30 bg-black/75 backdrop-blur-sm sm:w-[420px] sm:backdrop-blur', className)}>
       <CardHeader className="pb-4">
         <CardTitle className="display-font flex items-center gap-2 text-2xl">
           <Route className="h-5 w-5" />

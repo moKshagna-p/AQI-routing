@@ -42,6 +42,8 @@ type ProviderRoute = {
 };
 
 type OSRMResponse = {
+  code?: string;
+  message?: string;
   routes: Array<{
     distance: number;
     duration: number;
@@ -59,8 +61,6 @@ type OpenMeteoAQIResponse = {
     ozone: Array<number | null>;
   };
 };
-
-const OSRM_BASE_URL = process.env.NEXT_PUBLIC_OSRM_BASE_URL ?? 'https://router.project-osrm.org';
 
 const profileByMode: Record<TransportMode, string> = {
   walk: 'walking',
@@ -227,18 +227,20 @@ async function fetchRoutesFromOSRM(
   transportMode: TransportMode
 ): Promise<ProviderRoute[]> {
   const profile = profileByMode[transportMode];
-  const coordinates = `${source[1]},${source[0]};${destination[1]},${destination[0]}`;
-  const url = `${OSRM_BASE_URL}/route/v1/${profile}/${coordinates}`;
-
-  const { data } = await axios.get<OSRMResponse>(url, {
+  const { data } = await axios.get<OSRMResponse>('/api/route', {
     params: {
-      overview: 'full',
-      alternatives: true,
-      geometries: 'geojson',
-      steps: false
+      profile,
+      sourceLat: source[0],
+      sourceLng: source[1],
+      destinationLat: destination[0],
+      destinationLng: destination[1]
     },
-    timeout: 7000
+    timeout: 12000
   });
+
+  if (data.code && data.code !== 'Ok') {
+    throw new Error(data.message ?? 'Routing provider returned an error.');
+  }
 
   return (data.routes ?? []).slice(0, 3).map((route) => ({
     distanceKm: route.distance / 1000,

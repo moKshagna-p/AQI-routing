@@ -190,31 +190,42 @@ export default function PlanPage() {
         loading={loading}
       />
 
-      <RoutePanel onFindRoute={handleFindRoute} />
-      <ResultPanel routes={routes} selectedRouteId={selectedRouteId} onSelect={selectRoute} />
-
-      {/* Best Time to Leave chart */}
-      {hourlyForecast && hourlyForecast.length > 0 && (
-        <DepartureChart forecast={hourlyForecast} />
-      )}
-
-      {/* Copy Link button */}
-      {routes.length > 0 && (
-        <div className="absolute right-3 top-20 z-[1200] sm:right-6 sm:top-24">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCopyLink}
-            className="rounded-full border border-white/20 bg-black/70 backdrop-blur"
-          >
-            {linkCopied ? (
-              <><Check className="mr-1 h-3.5 w-3.5 text-green-400" /> Copied</>
-            ) : (
-              <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
-            )}
-          </Button>
+      <div className="pointer-events-none absolute inset-x-3 top-20 z-[1200] flex flex-col gap-3 sm:inset-x-6 sm:top-24 sm:flex-row sm:items-start sm:justify-between">
+        <div className="pointer-events-none flex w-full max-w-[420px] flex-col gap-3">
+          <RoutePanel onFindRoute={handleFindRoute} className="pointer-events-auto" />
+          {hourlyForecast && hourlyForecast.length > 0 ? (
+            <DepartureChart forecast={hourlyForecast} className="pointer-events-auto" />
+          ) : null}
         </div>
-      )}
+
+        <div className="pointer-events-none flex w-full flex-col items-end gap-3 sm:max-w-[430px]">
+          {routes.length > 0 ? (
+            <div className="pointer-events-auto flex w-full justify-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCopyLink}
+                className="rounded-full border border-white/20 bg-black/70 backdrop-blur"
+              >
+                {linkCopied ? (
+                  <><Check className="mr-1 h-3.5 w-3.5 text-green-400" /> Copied</>
+                ) : (
+                  <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
+                )}
+              </Button>
+            </div>
+          ) : null}
+
+          {routes.length > 0 ? (
+            <ResultPanel
+              routes={routes}
+              selectedRouteId={selectedRouteId}
+              onSelect={selectRoute}
+              className="pointer-events-auto"
+            />
+          ) : null}
+        </div>
+      </div>
 
       <AnimatePresence>
         {error && (

@@ -17,6 +17,7 @@ type ResultPanelProps = {
   routes: RouteVariant[];
   selectedRouteId: string | null;
   onSelect: (id: string) => void;
+  className?: string;
 };
 
 function BreakdownBar({ label, value, maxValue = 200 }: { label: string; value: number; maxValue?: number }) {
@@ -42,7 +43,7 @@ function BreakdownBar({ label, value, maxValue = 200 }: { label: string; value: 
   );
 }
 
-export default function ResultPanel({ routes, selectedRouteId, onSelect }: ResultPanelProps) {
+export default function ResultPanel({ routes, selectedRouteId, onSelect, className }: ResultPanelProps) {
   const sensitivityProfile = usePlanStore((s) => s.sensitivityProfile);
   const sourceLabel = usePlanStore((s) => s.sourceLabel);
   const destinationLabel = usePlanStore((s) => s.destinationLabel);
@@ -52,7 +53,7 @@ export default function ResultPanel({ routes, selectedRouteId, onSelect }: Resul
 
   return (
     <>
-    <Card className="absolute bottom-3 right-3 z-[1000] max-h-[calc(100vh-6rem)] w-[calc(100%-1.5rem)] overflow-y-auto border-white/30 bg-black/75 backdrop-blur sm:bottom-6 sm:right-6 sm:w-[430px]">
+    <Card className={cn('max-h-[min(60vh,42rem)] w-full overflow-y-auto border-white/30 bg-black/75 backdrop-blur sm:w-[430px]', className)}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>

@@ -26,11 +26,11 @@ export default function AQIBadge({ value, compact = false }: AQIBadgeProps) {
 
   if (compact) {
     return (
-      <div className="flex flex-col items-end gap-1">
+      <div className="flex min-w-[4.75rem] flex-col items-end gap-1">
         <motion.span style={{ color }} className="number-display text-2xl font-black leading-none">
           {rounded}
         </motion.span>
-        <Badge variant="secondary" className="text-[10px]" style={{ color }}>
+        <Badge variant="secondary" className="min-w-[4.75rem] justify-center whitespace-nowrap text-[10px]" style={{ color }}>
           {level}
         </Badge>
       </div>

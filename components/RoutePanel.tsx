@@ -1,11 +1,11 @@
 'use client';
 
 import { Car, Bike, PersonStanding, Loader2, Route, Heart, Stethoscope, Baby, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SliderControl from './SliderControl';
 import { usePlanStore } from '@/lib/store';
-import { geocodePlace } from '@/lib/geocoding';
+import { geocodePlace, searchPlaces, type LocationSuggestion } from '@/lib/geocoding';
 import { type TransportMode } from '@/lib/routeUtils';
 import { type SensitivityProfile, getSensitivityLabel } from '@/lib/aqiUtils';
 import { Button } from '@/components/ui/button';
@@ -67,13 +67,57 @@ export default function RoutePanel({ onFindRoute, className }: RoutePanelProps) 
   } = usePlanStore();
 
   const [resolving, setResolving] = useState(false);
+  const [sourceSuggestions, setSourceSuggestions] = useState<LocationSuggestion[]>([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState<LocationSuggestion[]>([]);
+  const [showSourceSuggestions, setShowSourceSuggestions] = useState(false);
+  const [showDestinationSuggestions, setShowDestinationSuggestions] = useState(false);
+  const [searchingSource, setSearchingSource] = useState(false);
+  const [searchingDestination, setSearchingDestination] = useState(false);
 
-  const { register, handleSubmit, formState } = useForm<RouteFormValues>({
+  const { register, handleSubmit, formState, watch, setValue } = useForm<RouteFormValues>({
     defaultValues: {
       source: sourceLabel,
       destination: destinationLabel
     }
   });
+  const sourceValue = watch('source');
+  const destinationValue = watch('destination');
+
+  useEffect(() => {
+    if (!showSourceSuggestions) return;
+    const query = sourceValue?.trim() ?? '';
+    if (query.length < 2) {
+      setSourceSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setSearchingSource(true);
+      const results = await searchPlaces(query);
+      setSourceSuggestions(results);
+      setSearchingSource(false);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [sourceValue, showSourceSuggestions]);
+
+  useEffect(() => {
+    if (!showDestinationSuggestions) return;
+    const query = destinationValue?.trim() ?? '';
+    if (query.length < 2) {
+      setDestinationSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setSearchingDestination(true);
+      const results = await searchPlaces(query);
+      setDestinationSuggestions(results);
+      setSearchingDestination(false);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [destinationValue, showDestinationSuggestions]);
 
   const onSubmit = handleSubmit(async (values) => {
     if (values.source.trim().toLowerCase() === values.destination.trim().toLowerCase()) {
@@ -104,34 +148,98 @@ export default function RoutePanel({ onFindRoute, className }: RoutePanelProps) 
   });
 
   return (
-    <Card className={cn('w-full border-white/30 bg-black/75 backdrop-blur-sm sm:w-[420px] sm:backdrop-blur', className)}>
+    <Card className={cn('route-panel-shell w-full border-white/20 bg-black/70 backdrop-blur-sm sm:w-[420px] sm:backdrop-blur', className)}>
       <CardHeader className="pb-4">
-        <CardTitle className="display-font flex items-center gap-2 text-2xl">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="mono-font text-[10px] uppercase tracking-[0.3em] text-white/35">Route input</div>
+          <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-white/55">
+            live geocoding
+          </div>
+        </div>
+        <CardTitle className="display-font flex items-center gap-2 text-2xl tracking-[-0.05em]">
           <Route className="h-5 w-5" />
-          Route Planner
+          Build your path
         </CardTitle>
-        <CardDescription>
-          Enter any two places. The app computes routes and ranks them by live AQI exposure.
+        <CardDescription className="max-w-sm leading-6">
+          Enter any two places. The app computes route variants and ranks them by live AQI exposure.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="source">Origin</Label>
-            <Input id="source" placeholder="e.g., Times Square, New York..." autoComplete="off" {...register('source', { required: true })} />
+          <div className="relative space-y-2">
+            <Label htmlFor="source" className="text-[11px] uppercase tracking-[0.22em] text-white/55">Origin</Label>
+            <Input
+              id="source"
+              placeholder="e.g., Times Square, New York..."
+              autoComplete="off"
+              {...register('source', { required: true })}
+              onFocus={() => setShowSourceSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSourceSuggestions(false), 120)}
+            />
+            {showSourceSuggestions && (sourceSuggestions.length > 0 || searchingSource) && (
+              <div className="absolute left-0 right-0 top-[calc(100%+0.25rem)] z-20 overflow-hidden rounded-xl border border-white/15 bg-black/95 shadow-2xl backdrop-blur">
+                {searchingSource ? (
+                  <div className="px-3 py-2 text-xs text-white/60">Searching places...</div>
+                ) : (
+                  sourceSuggestions.map((suggestion) => (
+                    <button
+                      key={`${suggestion.label}-${suggestion.coordinates[0]}-${suggestion.coordinates[1]}`}
+                      type="button"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setValue('source', suggestion.label, { shouldDirty: true });
+                        setShowSourceSuggestions(false);
+                      }}
+                      className="w-full border-b border-white/10 px-3 py-2.5 text-left text-xs text-white/75 transition-colors last:border-b-0 hover:bg-white/[0.08]"
+                    >
+                      {suggestion.label}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="destination">Destination</Label>
-            <Input id="destination" placeholder="e.g., Brooklyn Bridge..." autoComplete="off" {...register('destination', { required: true })} />
+          <div className="relative space-y-2">
+            <Label htmlFor="destination" className="text-[11px] uppercase tracking-[0.22em] text-white/55">Destination</Label>
+            <Input
+              id="destination"
+              placeholder="e.g., Brooklyn Bridge..."
+              autoComplete="off"
+              {...register('destination', { required: true })}
+              onFocus={() => setShowDestinationSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowDestinationSuggestions(false), 120)}
+            />
+            {showDestinationSuggestions && (destinationSuggestions.length > 0 || searchingDestination) && (
+              <div className="absolute left-0 right-0 top-[calc(100%+0.25rem)] z-20 overflow-hidden rounded-xl border border-white/15 bg-black/95 shadow-2xl backdrop-blur">
+                {searchingDestination ? (
+                  <div className="px-3 py-2 text-xs text-white/60">Searching places...</div>
+                ) : (
+                  destinationSuggestions.map((suggestion) => (
+                    <button
+                      key={`${suggestion.label}-${suggestion.coordinates[0]}-${suggestion.coordinates[1]}`}
+                      type="button"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setValue('destination', suggestion.label, { shouldDirty: true });
+                        setShowDestinationSuggestions(false);
+                      }}
+                      className="w-full border-b border-white/10 px-3 py-2.5 text-left text-xs text-white/75 transition-colors last:border-b-0 hover:bg-white/[0.08]"
+                    >
+                      {suggestion.label}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
-          <div className="rounded-lg border border-white/20 bg-black/35 p-3">
+          <div className="rounded-[20px] border border-white/12 bg-white/[0.03] p-4">
             <SliderControl value={preference} onChange={setPreference} />
           </div>
 
           <div className="space-y-2">
-            <Label>Transport</Label>
+            <Label className="text-[11px] uppercase tracking-[0.22em] text-white/55">Transport</Label>
             <ToggleGroup
               type="single"
               value={transportMode}
@@ -156,7 +264,7 @@ export default function RoutePanel({ onFindRoute, className }: RoutePanelProps) 
 
           {/* Health Profile selector */}
           <div className="space-y-2">
-            <Label>Health Profile</Label>
+            <Label className="text-[11px] uppercase tracking-[0.22em] text-white/55">Health Profile</Label>
             <ToggleGroup
               type="single"
               value={sensitivityProfile}

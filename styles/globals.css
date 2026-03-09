@@ -154,6 +154,179 @@ a:focus-visible {
   z-index: 1;
 }
 
+.hero-orb,
+.planner-orb {
+  position: absolute;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 28%, transparent 68%);
+  filter: blur(22px);
+  opacity: 0.72;
+}
+
+.hero-orb-secondary,
+.planner-orb-secondary {
+  opacity: 0.48;
+  transform: scale(0.82);
+}
+
+.hero-grid,
+.planner-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 90px 90px;
+  mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.38), transparent 82%);
+  opacity: 0.12;
+}
+
+.route-preview-card,
+.route-panel-shell,
+.route-metric-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.route-preview-card::before,
+.route-panel-shell::before,
+.result-panel-shell::before,
+.route-metric-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.08), transparent 24%),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 38%);
+  opacity: 0.65;
+}
+
+.route-preview-card {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    rgba(0, 0, 0, 0.62);
+  border-radius: 34px;
+  padding: 1.5rem;
+  box-shadow: 0 40px 120px -48px rgba(0, 0, 0, 0.95);
+}
+
+.route-preview-card__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.route-preview-card__headline {
+  margin-top: 1.5rem;
+  max-width: 20rem;
+  font-family: 'Cabinet Grotesk', 'Satoshi', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+}
+
+.route-metric-panel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+}
+
+.route-stat-block {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  min-height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 1rem;
+  backdrop-filter: blur(20px);
+}
+
+.feature-rail {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: flex-start;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  animation: rise-in 700ms var(--ease-out-expo) both;
+}
+
+.feature-rail:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.feature-rail__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.planner-top-strip {
+  box-shadow: 0 28px 90px -46px rgba(0, 0, 0, 0.95);
+}
+
+.planner-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem 0.9rem;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.route-panel-shell,
+.result-panel-shell {
+  border-radius: 30px;
+  box-shadow: 0 40px 120px -52px rgba(0, 0, 0, 0.98);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-grid,
+  .planner-grid {
+    background-size: 56px 56px;
+  }
+
+  .route-preview-card {
+    padding: 1.25rem;
+    border-radius: 28px;
+  }
+
+  .route-stat-block {
+    border-radius: 20px;
+  }
+}
+
 /* ═══════════════════════════════════════════
    Typography — Editorial System
    ═══════════════════════════════════════════ */

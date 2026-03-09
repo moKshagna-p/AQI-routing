@@ -27,6 +27,8 @@ type PhotonResponse = {
   features?: PhotonResult[];
 };
 
+export type LocationSuggestion = GeocodedPlace;
+
 function formatPhotonLabel(result: PhotonResult): string {
   const parts = [
     result.properties?.name,
@@ -77,6 +79,43 @@ async function geocodeWithPhoton(query: string): Promise<GeocodedPlace | null> {
   };
 }
 
+async function searchWithPhoton(query: string, limit: number): Promise<LocationSuggestion[]> {
+  const { data } = await axios.get<PhotonResponse>('https://photon.komoot.io/api', {
+    params: { q: query, limit },
+    timeout: 5000
+  });
+
+  return (
+    data.features
+      ?.map((feature) => {
+        const coords = feature.geometry?.coordinates;
+        if (!coords) return null;
+        return {
+          label: formatPhotonLabel(feature),
+          coordinates: [coords[1], coords[0]] as [number, number]
+        };
+      })
+      .filter((item): item is LocationSuggestion => Boolean(item)) ?? []
+  );
+}
+
+async function searchWithNominatim(query: string, limit: number): Promise<LocationSuggestion[]> {
+  const { data } = await axios.get<NominatimResult[]>('https://nominatim.openstreetmap.org/search', {
+    params: {
+      q: query,
+      format: 'jsonv2',
+      limit,
+      addressdetails: 1
+    },
+    timeout: 5000
+  });
+
+  return data.map((item) => ({
+    label: item.display_name,
+    coordinates: [Number(item.lat), Number(item.lon)]
+  }));
+}
+
 export async function geocodePlace(query: string): Promise<GeocodedPlace | null> {
   if (!query.trim()) return null;
 
@@ -91,5 +130,23 @@ export async function geocodePlace(query: string): Promise<GeocodedPlace | null>
     return await geocodeWithPhoton(query);
   } catch {
     return null;
+  }
+}
+
+export async function searchPlaces(query: string, limit = 5): Promise<LocationSuggestion[]> {
+  const trimmed = query.trim();
+  if (trimmed.length < 2) return [];
+
+  try {
+    const photonResults = await searchWithPhoton(trimmed, limit);
+    if (photonResults.length) return photonResults.slice(0, limit);
+  } catch {
+    // Fall through to backup provider.
+  }
+
+  try {
+    return (await searchWithNominatim(trimmed, limit)).slice(0, limit);
+  } catch {
+    return [];
   }
 }

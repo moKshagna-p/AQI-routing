@@ -125,9 +125,15 @@ export default function PlanPage() {
   }, []);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="relative h-screen overflow-hidden bg-bg">
+      <div className="pointer-events-none absolute inset-0 z-[900]">
+        <div className="planner-orb left-[-10rem] top-[6rem]" />
+        <div className="planner-orb planner-orb-secondary right-[-6rem] top-[-4rem]" />
+        <div className="planner-grid absolute inset-0" />
+      </div>
+
       <header className="absolute left-1/2 top-4 z-[1200] -translate-x-1/2 sm:top-5">
-        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/75 p-1.5 backdrop-blur">
+        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/75 p-1.5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur">
           <Button asChild variant="ghost" size="sm" className="rounded-full">
             <Link href="/">
               <ArrowLeft className="mr-1 h-4 w-4" /> Home
@@ -190,40 +196,46 @@ export default function PlanPage() {
         loading={loading}
       />
 
-      <div className="pointer-events-none absolute inset-x-3 top-20 z-[1200] flex flex-col gap-3 sm:inset-x-6 sm:top-24 sm:flex-row sm:items-start sm:justify-between">
-        <div className="pointer-events-none flex w-full max-w-[420px] flex-col gap-3">
-          <RoutePanel onFindRoute={handleFindRoute} className="pointer-events-auto" />
-          {hourlyForecast && hourlyForecast.length > 0 ? (
-            <DepartureChart forecast={hourlyForecast} className="pointer-events-auto" />
-          ) : null}
-        </div>
-
-        <div className="pointer-events-none flex w-full flex-col items-end gap-3 sm:max-w-[430px]">
-          {routes.length > 0 ? (
-            <div className="pointer-events-auto flex w-full justify-end">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCopyLink}
-                className="rounded-full border border-white/20 bg-black/70 backdrop-blur"
-              >
-                {linkCopied ? (
-                  <><Check className="mr-1 h-3.5 w-3.5 text-green-400" /> Copied</>
-                ) : (
-                  <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
-                )}
-              </Button>
+      <div className="pointer-events-none absolute inset-0 z-[1200]">
+        <div className="absolute inset-x-3 top-20 flex flex-col gap-3 md:top-24 lg:inset-x-6">
+          <div className="flex flex-col gap-3 xl:grid xl:grid-cols-[26rem_minmax(0,1fr)_27rem] xl:items-start">
+            <div className="pointer-events-none flex w-full max-w-[420px] flex-col gap-3">
+              <RoutePanel onFindRoute={handleFindRoute} className="pointer-events-auto" />
+              {hourlyForecast && hourlyForecast.length > 0 ? (
+                <DepartureChart forecast={hourlyForecast} className="pointer-events-auto" />
+              ) : null}
             </div>
-          ) : null}
 
-          {routes.length > 0 ? (
-            <ResultPanel
-              routes={routes}
-              selectedRouteId={selectedRouteId}
-              onSelect={selectRoute}
-              className="pointer-events-auto"
-            />
-          ) : null}
+            <div className="hidden xl:block" />
+
+            <div className="pointer-events-none flex w-full flex-col items-end gap-3 xl:max-w-[430px]">
+              {routes.length > 0 ? (
+                <div className="pointer-events-auto flex w-full justify-end">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCopyLink}
+                    className="rounded-full border border-white/20 bg-black/70 backdrop-blur"
+                  >
+                    {linkCopied ? (
+                      <><Check className="mr-1 h-3.5 w-3.5 text-green-400" /> Copied</>
+                    ) : (
+                      <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
+                    )}
+                  </Button>
+                </div>
+              ) : null}
+
+              {routes.length > 0 ? (
+                <ResultPanel
+                  routes={routes}
+                  selectedRouteId={selectedRouteId}
+                  onSelect={selectRoute}
+                  className="pointer-events-auto"
+                />
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -241,12 +253,6 @@ export default function PlanPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {!routes.length && !loading && !error && (
-        <div className="absolute bottom-20 left-4 z-[1200] max-w-sm rounded-lg border border-white/20 bg-black/75 px-4 py-3 text-sm text-white/70 backdrop-blur sm:bottom-7 sm:left-7">
-          Enter origin and destination, then compare cleanest, fastest, and balanced routes using live AQI samples.
-        </div>
-      )}
     </motion.div>
   );
 }

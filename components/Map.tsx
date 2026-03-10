@@ -24,7 +24,7 @@ const destIcon = L.divIcon({
 
 /* ── Static AQI Legend (hoisted outside component per rendering-hoist-jsx) ── */
 const AQILegend = (
-  <div className="absolute bottom-5 right-5 z-[1000] rounded-lg border border-white/15 bg-black/80 p-2.5 backdrop-blur-sm">
+  <div className="absolute left-5 top-24 z-[1050] rounded-lg border border-white/15 bg-black/80 p-2.5 backdrop-blur-sm">
     <div className="mb-1.5 text-[9px] uppercase tracking-widest text-white/50">AQI Scale</div>
     <div className="flex flex-col gap-1">
       {AQI_TIERS.map((tier, i) => {
@@ -165,17 +165,35 @@ export default function Map({ source, destination, routes, selectedRouteId, mapC
       </MapContainer>
 
       {/* Controls row */}
-      <div className="absolute bottom-5 left-5 z-[1000] flex rounded-lg border border-white/20 bg-black/70 p-1 backdrop-blur">
-        <Button variant={showHeatmap ? 'secondary' : 'ghost'} size="sm" onClick={() => setShowHeatmap(true)}>
+      <div className="absolute bottom-5 left-5 z-[1000] flex rounded-xl border border-[#7a7979] bg-[#3f3f3f]/85 p-1 backdrop-blur">
+        <Button
+          variant={showHeatmap ? 'secondary' : 'ghost'}
+          size="sm"
+          onClick={() => setShowHeatmap(true)}
+          className={
+            showHeatmap
+              ? 'border border-[#8a8989] bg-[#616060] text-white hover:bg-[#6f6e6e]'
+              : 'border border-[#7d7c7c] bg-transparent text-white/80 hover:bg-[#616060]/45'
+          }
+        >
           <Layers className="mr-1 h-3.5 w-3.5" /> AQI Overlay
         </Button>
-        <Button variant={!showHeatmap ? 'secondary' : 'ghost'} size="sm" onClick={() => setShowHeatmap(false)}>
+        <Button
+          variant={!showHeatmap ? 'secondary' : 'ghost'}
+          size="sm"
+          onClick={() => setShowHeatmap(false)}
+          className={
+            !showHeatmap
+              ? 'border border-[#8a8989] bg-[#616060] text-white hover:bg-[#6f6e6e]'
+              : 'border border-[#7d7c7c] bg-transparent text-white/80 hover:bg-[#616060]/45'
+          }
+        >
           Clean Route View
         </Button>
       </div>
 
       {/* AQI Legend */}
-      {showHeatmap && routes.length > 0 && AQILegend}
+      {showHeatmap && AQILegend}
 
       {loading ? (
         <div className="absolute inset-0 z-[1100] grid place-items-center bg-black/65 backdrop-blur-sm">

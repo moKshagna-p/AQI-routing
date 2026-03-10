@@ -133,18 +133,27 @@ export default function PlanPage() {
       </div>
 
       <header className="absolute left-1/2 top-4 z-[1200] -translate-x-1/2 sm:top-5">
-        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/75 p-1.5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur">
-          <Button asChild variant="ghost" size="sm" className="rounded-full">
+        <div className="flex items-center gap-2 rounded-full border border-[#7a7979] bg-[#3f3f3f]/85 p-1.5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.85)] backdrop-blur">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="rounded-full border border-[#858484] bg-[#616060] text-white hover:bg-[#6f6e6e]"
+          >
             <Link href="/">
               <ArrowLeft className="mr-1 h-4 w-4" /> Home
             </Link>
           </Button>
 
-          <div className="h-4 w-px bg-white/20" />
+          <div className="h-4 w-px bg-[#8f8e8e]" />
 
           <Dialog open={showAQIInfo} onOpenChange={setShowAQIInfo}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="rounded-full">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="rounded-full border border-[#858484] bg-[#616060] text-white hover:bg-[#6f6e6e]"
+              >
                 <Info className="mr-1 h-4 w-4" /> AQI Scale
               </Button>
             </DialogTrigger>
@@ -197,44 +206,41 @@ export default function PlanPage() {
       />
 
       <div className="pointer-events-none absolute inset-0 z-[1200]">
-        <div className="absolute inset-x-3 top-20 flex flex-col gap-3 md:top-24 lg:inset-x-6">
-          <div className="flex flex-col gap-3 xl:grid xl:grid-cols-[26rem_minmax(0,1fr)_27rem] xl:items-start">
-            <div className="pointer-events-none flex w-full max-w-[420px] flex-col gap-3">
-              <RoutePanel onFindRoute={handleFindRoute} className="pointer-events-auto" />
-              {hourlyForecast && hourlyForecast.length > 0 ? (
-                <DepartureChart forecast={hourlyForecast} className="pointer-events-auto" />
-              ) : null}
-            </div>
+        <div className="absolute bottom-3 left-3 right-3 top-20 md:bottom-6 md:left-auto md:right-6 md:top-24 md:w-[430px]">
+          <div className="pointer-events-auto h-full overflow-y-auto rounded-[32px] border border-white/18 bg-black/52 p-3 shadow-[0_30px_80px_-45px_rgba(0,0,0,0.95)] backdrop-blur-sm">
+              <div className="flex flex-col gap-3">
+                <RoutePanel onFindRoute={handleFindRoute} className="w-full sm:w-full" />
 
-            <div className="hidden xl:block" />
+                {hourlyForecast && hourlyForecast.length > 0 ? (
+                  <DepartureChart forecast={hourlyForecast} />
+                ) : null}
 
-            <div className="pointer-events-none flex w-full flex-col items-end gap-3 xl:max-w-[430px]">
-              {routes.length > 0 ? (
-                <div className="pointer-events-auto flex w-full justify-end">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleCopyLink}
-                    className="rounded-full border border-white/20 bg-black/70 backdrop-blur"
-                  >
-                    {linkCopied ? (
-                      <><Check className="mr-1 h-3.5 w-3.5 text-green-400" /> Copied</>
-                    ) : (
-                      <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
-                    )}
-                  </Button>
-                </div>
-              ) : null}
+                {routes.length > 0 ? (
+                  <div className="flex w-full justify-end">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCopyLink}
+                      className="rounded-full border border-emerald-200/35 bg-emerald-500/10 text-emerald-50 hover:bg-emerald-400/20"
+                    >
+                      {linkCopied ? (
+                        <><Check className="mr-1 h-3.5 w-3.5 text-green-300" /> Copied</>
+                      ) : (
+                        <><Link2 className="mr-1 h-3.5 w-3.5" /> Copy Link</>
+                      )}
+                    </Button>
+                  </div>
+                ) : null}
 
-              {routes.length > 0 ? (
-                <ResultPanel
-                  routes={routes}
-                  selectedRouteId={selectedRouteId}
-                  onSelect={selectRoute}
-                  className="pointer-events-auto"
-                />
-              ) : null}
-            </div>
+                {routes.length > 0 ? (
+                  <ResultPanel
+                    routes={routes}
+                    selectedRouteId={selectedRouteId}
+                    onSelect={selectRoute}
+                    className="!max-h-none !w-full !overflow-visible sm:!w-full"
+                  />
+                ) : null}
+              </div>
           </div>
         </div>
       </div>

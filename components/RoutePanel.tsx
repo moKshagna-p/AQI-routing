@@ -148,7 +148,7 @@ export default function RoutePanel({ onFindRoute, className }: RoutePanelProps) 
   });
 
   return (
-    <Card className={cn('route-panel-shell w-full border-white/20 bg-black/70 backdrop-blur-sm sm:w-[420px] sm:backdrop-blur', className)}>
+    <Card className={cn('route-panel-shell w-full border-white/20 bg-black/70 backdrop-blur-sm sm:backdrop-blur', className)}>
       <CardHeader className="pb-4">
         <div className="mb-4 flex items-center justify-between">
           <div className="mono-font text-[10px] uppercase tracking-[0.3em] text-white/35">Route input</div>

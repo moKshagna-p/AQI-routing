@@ -207,9 +207,9 @@ export default function PlanPage() {
 
       <div className="pointer-events-none absolute inset-0 z-[1200]">
         <div className="absolute bottom-3 left-3 right-3 top-20 md:bottom-6 md:left-auto md:right-6 md:top-24 md:w-[430px]">
-          <div className="pointer-events-auto h-full overflow-y-auto rounded-[32px] border border-white/18 bg-black/52 p-3 shadow-[0_30px_80px_-45px_rgba(0,0,0,0.95)] backdrop-blur-sm">
+          <div className="pointer-events-auto h-full overflow-x-hidden overflow-y-auto rounded-[32px] border border-white/18 bg-black/52 p-3 shadow-[0_30px_80px_-45px_rgba(0,0,0,0.95)] backdrop-blur-sm">
               <div className="flex flex-col gap-3">
-                <RoutePanel onFindRoute={handleFindRoute} className="w-full sm:w-full" />
+                <RoutePanel onFindRoute={handleFindRoute} className="w-full" />
 
                 {hourlyForecast && hourlyForecast.length > 0 ? (
                   <DepartureChart forecast={hourlyForecast} />
